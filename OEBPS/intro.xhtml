@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <title>LaTeX 入門</title>
+ <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<article>
+<section>
+<h1 id="start">序文</h1>
+<p>LaTeX は組版ソフトの一つです。特に数式を美しく組版できることから、技術論文誌で LaTeX が採用されています。</p>
+<p>本書は LaTeX の入門書であると同時に、ePub3 で LaTeX 相当の組版をするための手引となっています。</p>
+</section>
+</article>
+
+<article>
+<section>
+<h1 id="history">TeX の歴史</h1>
+<h2 id="plaintex">plain TeX</h2>
+<p><dfn>TeX</dfn> は Donald E.&#160;Knuth 博士によって開発されました。TeX は組版のための最小限のマクロの集まりであり、ユーザーが直接扱うには複雑すぎました。そこで TeX と一緒に配布されたのが <dfn>plain TeX</dfn> と呼ばれるマクロ集です。</p>
+<p>一般に、TeX でドキュメントを書くと言う場合、それは plain TeX を使うことを意味します。</p>
+<h2 id="latex">LaTeX の登場</h2>
+<p>plain TeX は非常に高度な組版システムでしたが、構造化文章を組むようには作られていませんでした。そこで、構造化文章が作成できる様に追加されたマクロ集を Leslie Lamport 氏が作成しました。これを <dfn>LaTeX</dfn> と呼びます。</p>
+<p>LaTeX はパッケージ・システムを導入し、ユーザーが LaTeX を拡張できる仕組みを持っていました。しかし、大量のパッケージが作成された結果、パッケージ間の互間性問題が発生しました。そこでパッケージ・システムを書き直し、パッケージ間の互間性問題が起きない様に改良されたものが <dfn>LaTeX2e</dfn> です。</p>
+<p>本ドキュメントでは LaTeX2e を含めて「LaTeX」と呼びます。</p>
+<h2 id="platex2e">pLaTeX2e</h2>
+<p>TeX 及び LaTeX は英語圏で作られたため、日本語を扱うことができませんでした。そこで日本語化に向けて 2 つの動きがありました。1 つは NTT が進めた <dfn>jTeX</dfn> (<dfn>jLaTeX</dfn>)、もう 1 つは ASCII が進めた <dfn>pTeX</dfn> (<dfn>pLaTeX</dfn>) です。</p>
+<p>LaTeX2e が発表された時、ASCII の pLaTeX だけが LaTeX2e 化を進めました。現在、日本語を扱う LaTeX は <dfn>pLeTeX2e</dfn> のみです。</p>
+<p>本ドキュメントでは pLaTeX2e を含めて「LaTeX」と呼びます。</p>
+</section>
+</article>
+
+<article>
+<section>
+<h1 id="basic">LaTeX の基礎</h1>
+<h2 id="compile-latex">LaTeX のコンパイル</h2>
+<p>LaTeX のドキュメント・ソースはマークアップ言語で記述します。ソース・ファイルの拡張子は、plain TeX であれ LaTeX であれ、tex を使います。LaTeX のソース・ファイルは platex コマンド (英語用なら latex コマンド) を使って <abbr>DVI</abbr> ファイルに変換します。DVI は DeVice Indepedent (デバイス非依存) の略称です。更に DVI ファイルから、PostScript (ps) ファイルや <abbr>PDF</abbr> ファイルへ変換して、我々が馴染みのドキュメント・ファイル形式に直します。DVI ファイルから PostScript への変換は dvips コマンドを、PDF への変換は dvipdfmx コマンドを使います。</p>
+<figure id="compile">
+  <img src="compile.svg" />
+  <figcaption class="figure">LaTeX のコンパイル</figcaption>
+</figure>
+<h2 id="rule">最低限のルール</h2>
+<ol>
+ <li>TeX 及び LaTeX の組版命令 (コマンド) は、\ で始まり空白で終わります</li>
+ <li>複数の半角空白は 1 つと見做されます</li>
+ <li>空行は段落の切れ目と見做されます。複数の空行は 1 つの空行と見做されます</li>
+ <li>半角文字の中には、そのまま入力できない文字があります</li>
+</ol>
+<p>半角文字でそのまま入力できない文字は<a class="table" href="#special-char">以下</a>の通りです。</p>
+<figure>
+<figcaption id="special-char" class="table">TeX や LaTeX でそのまま入力できない文字</figcaption>
+<table>
+  <thead>
+  <tr><th>記号</th> <th>意味</th> <th>入力方法</th> <th>出力</th></tr>
+  </thead>
+  <tbody>
+  <tr><td>#</td> <td>TeX や LaTeX のコマンドの引数</td> <td><code>\#</code></td> <td>#</td></tr>
+  <tr><td>$</td> <td>数式モードへの移行</td> <td><code>\$</code></td> <td>$</td></tr>
+  <tr><td>%</td> <td>改行までをコメントとする</td> <td><code>\%</code></td> <td>%</td></tr>
+  <tr><td>_</td> <td>数式モードで下付き</td> <td><code>\_</code></td> <td>_</td></tr>
+  <tr><td>{</td> <td>グループの開始</td> <td><code>\{</code></td> <td>{</td></tr>
+  <tr><td>}</td> <td>グループの終了</td> <td><code>\}</code></td> <td>}</td></tr>
+  <tr><td>&lt;</td> <td>—</td> <td><code>\textless</code></td> <td>&lt;</td></tr>
+  <tr><td>&gt;</td> <td>—</td> <td><code>\textgreater</code></td> <td>&gt;</td></tr>
+  <tr><td>\</td> <td>TeX や LaTeX のコマンド</td> <td><code>\textbackslash</code></td> <td>\</td></tr>
+  <tr><td>|</td> <td>表における罫線</td> <td><code>\textbar</code></td> <td>|</td></tr>
+  <tr><td>^</td> <td>数式モードで上付き</td> <td><code>\textasciicircum</code></td> <td>^</td></tr>
+  <tr><td>~</td> <td>非改行空白 (Non Brakable SPace)</td> <td><code>\textasciitilde</code></td> <td>~</td></tr>
+  </tbody>
+</table>
+</figure>
+
+<h2 id="minimum">最小限の TeX 文章</h2>
+<p>最小限の TeX 文章をお見せします。</p>
+<pre><code>\documentclass{jsarticle}
+\begin{document}
+本文
+\end{document}
+</code></pre>
+<p><code>\documentclass</code> は LaTeX の一番最初に記述しなければならいコマンドです。<code>\documentclass</code> の引数にはドキュメントの種類を入れます。日本語用には <code>jsarticle</code> (論文や短い文章用) と <code>jsbook</code> (本や長い文章用) の 2 つのクラスが用意されています。</p>
+<p><code>\documentclass</code> から <code>\begin{document}</code> までの間を<dfn>プリアンブル</dfn> といい、ドキュメントのオプションやパッケージの読み込みを記述します。今回は最小の TeX 文章ですから、プリアンブルは空です。</p>
+<p>本文は <code>\begin{document}</code> から <code>\end{document}</code> の間に書きます。</p>
+
+<aside>
+<p>ePub3 の場合は XHTML5 でマークアップします。XHTML5 における最小限のソースコードは以下の通りです。</p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"&gt;
+ &lt;head&gt;
+  &lt;title&gt;タイトル&lt;/title&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+   本文
+ &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>このうち、<code>&lt;!DOCTYPE html&gt;</code> と <code>html</code> 要素の <code>lang</code> 属性は要らないのではないかと思う方もいらっしゃると思います。上記二点については互換性のために書いてあります。詳細は <a href="http://akaato.blogspot.com/2011/06/html5-xml.html">絳アト日記: HTML5 の XML 版の書き方</a> を参照して下さい。</p>
+</aside>
+
+<h2 id="head">見出し</h2>
+<p>LaTeX では見出しを付けることで、文章を構造化 (階層化) することが可能です。LaTeX で使える見出しは<a class="table" href="#headings">以下</a>の通りです</p>
+<figure>
+<figcaption id="headings" class="table">LaTeX の見出し</figcaption>
+<table>
+  <thead>
+  <tr><th>命令</th> <th>見出し</th></tr>
+  </thead>
+  <tbody>
+  <tr><td><code>\part{<i>title</i>}</code></td> <td>部</td></tr>
+  <tr><td><code>\chapter{<i>title</i>}</code></td> <td>章 (jsbook クラスのみ)</td></tr>
+  <tr><td><code>\section{<i>title</i>}</code></td> <td>節</td></tr>
+  <tr><td><code>\subsection{<i>title</i>}</code></td> <td>項 (小節)</td></tr>
+  <tr><td><code>\subsubsection{<i>title</i>}</code></td> <td>目 (小々節)</td></tr>
+  <tr><td><code>\paragraph{<i>title</i>}</code></td> <td>段落</td></tr>
+  <tr><td><code>\subparagraph{<i>title</i>}</code></td> <td>小段落</td></tr>
+  </tbody>
+</table>
+</figure>
+
+<aside>
+<p>ePub3 では XHTML5 の見出しを使います。</p>
+<p>XHTML5 では、2 つの見出しの書き方があります。1 つは古い HTML で使われていた <code>h1</code>, <code>h2</code>, <code>h3</code>, <code>h4</code>, <code>h5</code>, <code>h6</code> 要素を使う方法です。番号の大きい順に見出しの順位も上がります。</p>
+<p>もう 1 つは <code>section</code> 要素を併用する方法です。</p>
+<pre><code>&lt;section&gt;
+  &lt;h1&gt;Part&lt;/h1&gt;
+  &lt;section&gt;
+    &lt;h1&gt;Chapter&lt;/h1&gt;
+    &lt;section&gt;
+      &lt;h1&gt;Section&lt;/h1&gt;
+      &lt;h2&gt;Subsection&lt;/h2&gt;
+    &lt;/section&gt;
+  &lt;/section&gt;
+&lt;/section&gt;
+</code></pre>
+<p><code>section</code> を入れ子に出来る点がメリットです。セクションの終了を明示したい時や、JavaScript でセクションを扱う場合などは、こちらの方が便利です。</p>
+<p>CSS では子セレクターを使って区別します。</p>
+<pre><code>section > h1 { font-size: xx-large; }
+section > section > h1 { font-size: x-large; }
+section > section > section > h1 { font-color: blue; }
+</code></pre>
+</aside>
+
+<h2 id="footnote">注釈</h2>
+<p>LaTeX には注釈を付けるコマンドが 2 つ用意されています。<code>\footnote</code> と <code>\marginpar</code> がそれです。</p>
+<p><dfn><code>\footnote</code></dfn> はページ下に脚注を出力します。脚注の番号・記号は自動的に振られます。<span class="footnote">脚注の番号を明示的に指定したい場合は <code>\footnote[1]{脚注}</code> のようにします。</span></p>
+<pre><code>\footnote{脚注}
+</code></pre>
+
+<aside>
+<p>ePub3 では <a href="#css3page">[CSS3PAGE]</a> を使って footnote を書くことが可能です。<a href="#css3page">[CSS3PAGE]</a> には複数の例が紹介されていますが、シンプルなサンプルを提示しましょう。まず、CSS を次の様に定義します。</p>
+<pre><code>.footnote { float: footnote; }
+</code></pre>
+<p>次に XHTML を次のように書きます。</p>
+<pre><code>&lt;p&gt;本文 &lt;span class="footnote"&gt;脚注&lt;/span&gt;。&lt;/p&gt;
+</code></pre>
+<p>これで、footnote に対応したブラウザーは「脚注」部分を適当な場所に置いてくれます。</p>
+</aside>
+
+<p><dfn><code>\marginpar</code></dfn> はテキストの横 (マージン) に傍注を出力します。</p>
+<pre><code>\marginpar{傍注}
+</code></pre>
+
+<aside>
+<p>ePub3 で傍注を書く方法はありません。そもそも、傍注には本文と本のフチまでに空きがある必要があります。印刷物ならいざ知らず、電子書籍ではその様な空間があること自体期待できません。また、仮に CSS や JavaScript を活用して傍注が書けるとしても、控える方が良いでしょう。というのも、小さなディスプレーで見る人も居るからです。</p>
+</aside>
+</section>
+</article>
+
+<section>
+<article>
+<h1 id="env">文章構造と環境</h1>
+<p>LaTeX では <code>\begin{...}</code> で始まり、<code>\end{...}</code> で終わるマークアップを<dfn>環境</dfn>と呼びます。例えば、書いた通りに出力する環境を verbatim 環境と言い、次の様に書きます。サンプルは簡単な C のプログラムです。</p>
+<pre><code>\begin{verbatim}
+#include &lt;stdio.h&gt;
+int main(void)
+{
+  printf("Hello, World\n");
+  return 0;
+}
+\end{verbatim}
+</code></pre>
+<h2 id="abstract">abstract 環境</h2>
+<p><dfn><code>abstract</code> 環境</dfn>は概要を書くための環境です。</p>
+<pre><code>\begin{abstract}
+概要文はインデントされて表示されます。
+また、概要文の前に「概要」という見出しが付きます。
+\end{abstract}
+</code></pre>
+<p>出力はこんな感じです。</p>
+<pre><samp>
+<h3 style="text-align: center; margin: 0;">概 要</h3>
+<p style="padding: 0em 5em;">概要文はインデントされて表示されます。また、概要文の前に「概要」という見出しが付きます。</p>
+</samp></pre>
+<aside>
+<p>ePub3 では「概要」に当たるテキストを <code>div</code> 環境で囲って、適当に padding を設定すれば良いでしょう。</p>
+<pre><code>.abstract { padding: 0em 5em; }
+</code></pre>
+</aside>
+
+<h2 id="list">箇条書き環境</h2>
+<p>LaTeX には箇条書き用の環境として <code>itemize</code> 環境と <code>enumerate</code> 環境が用意されています。</p>
+<p><dfn><code>itemize</code> 環境</dfn>は番号無しの箇条書き環境です。<dfn><code>enumerate</code> 環境</dfn> は番号付き箇条書き環境です。アイテムは <code>\item</code> で区切ります。</p>
+<pre><code>\begin{itemize}
+  \item アップル
+  \item オレンジ
+  \item パイナップル
+\end{itemize}
+
+\begin{enumerate}
+  \item Apple
+  \item Orange
+  \item Pineapple
+\end{enumerate}
+</code></pre>
+
+<p>出力は以下の通りです。</p>
+
+<pre><samp><ul
+><li>アップル</li><li>オレンジ</li><li>パイナップル</li></ul
+><ol><li>Apple</li><li>Orange</li><li>Pineapple</li></ol
+></samp></pre>
+
+<aside>
+ePub3 で箇条書きは HTML の <code>ul</code>, <code>ol</code> 要素を使います。
+</aside>
+
+<h2 id="quote">引用環境</h2>
+<p>LaTeX には引用のための環境として <code>quote</code> 環境と <code>quotation</code> 環境が用意されています。</p>
+<p><dfn><code>quote</code> 環境</dfn>は短めの引用環境、<dfn><code>quotation</code> 環境</dfn>は長めの引用環境です。違いは、<code>quote</code> 環境が一つしか段落を持たないのに対して、<code>quotation</code> 環境は複数の環境を持つ点です。</p>
+<pre><code>\begin{quote}
+スタンフォード大学の Knuth 博士によって開発された組版用のソフトウェアである TeX は、高機能で高品位なデスクトップ・パブリッシング用ソフトとして、主に出版業界や教育・研究分野で広く支持されました。
+\end{quote}
+
+\begin{quotation}
+TeX は組版ソフトです。
+
+組版 (typesetting) ということばは、あまり一般的ではないかもしれませんが、印刷関係で活字を組んで版を作ることを意味します。TeX は、印刷でいう組版に相当することをコンピュータで行うためのソフトです。
+
+TeX は、フリーソフトです。ほかのフリーソフトと組み合わせて、組版結果を画面や紙に出力したり、PostScript や PDF といった形式で出力したりします。DTP ソフトの仲間といってもいいでしょう。
+\end{quotation}
+</code></pre>
+<p>最初の引用は「pLaTeX2e for Windows Another Manual Vol.1 Basic Kit 1999」から。二つ目の引用は「LaTeX2e 美文書作成入門 改訂第 5 版」からです。出力は次のようになります。</p>
+<pre><samp><blockquote style="padding-right: "
+>スタンフォード大学の Knuth 博士によって開発された組版用のソフトウェアである TeX は、高機能で高品位なデスクトップ・パブリッシング用ソフトとして、主に出版業界や教育・研究分野で広く支持されました。</blockquote>
+<blockquote
+><p>TeX は組版ソフトです。</p
+><p>組版 (typesetting) ということばは、あまり一般的ではないかもしれませんが、印刷関係で活字を組んで版を作ることを意味します。TeX は、印刷でいう組版に相当することをコンピュータで行うためのソフトです。</p
+><p>TeX は、フリーソフトです。ほかのフリーソフトと組み合わせて、組版結果を画面や紙に出力したり、PostScript や PDF といった形式で出力したりします。DTP ソフトの仲間といってもいいでしょう。</p></blockquote
+></samp></pre>
+
+<aside>
+<p>ePub3 で引用は HTML の <code>blockquote</code> 要素を使います。</p>
+<p><code>quote</code> 環境と <code>quotation</code> 環境との違いは、CSS で付ければ良いでしょう。</p>
+</aside>
+
+<h2 id="center">センタリング・右寄せ・左寄せ</h2>
+<p>LaTeX にはセンタリング、右寄せ、左寄せをするための環境が用意されています。</p>
+<p><dfn><code>center</code> 環境</dfn>は環境の中身をセンタリングし、<dfn><code>flushright</code> 環境</dfn>は右寄せ、<dfn><code>flushleft</code> 環境</dfn>は左寄せを行ないます。ただし、実際に使う機会はほとんどないでしょう。</p>
+
+<pre><code>\begin{center}
+  センタリングされる文章\\
+  バックスラッシュを 2 つ重ねて改行\\
+  \begin{flushleft}
+    flushleft 環境は center 環境の中でしか使う機会はないでしょう
+  \end{flushleft}
+再びセンタリングです\\
+\end{center}
+\begin{flushright}
+  右寄せは署名などで使いますね。\\
+  絳アト
+\end{flushright}
+</code></pre>
+
+<p>出力はこのようになります。</p>
+
+<pre><samp><div style="text-align: center;"
+>センタリングされる文章<br
+/>バックスラッシュを 2 つ重ねて改行
+<div style="text-align: left;"
+>flushleft 環境は center 環境の中でしか使う機会はないでしょう</div
+>再びセンタリングです</div
+><div style="text-align: right"
+>右寄せは署名などで使いますね。<br
+/>絳アト</div
+></samp></pre>
+
+<aside>
+ePub3 にはセンタリング・右寄せ・左寄せ用の要素はありません。これらは CSS を使ってサポートしましょう。
+<pre><code>.center{ text-align: center;}
+.right { text-align: right; }
+.left  { text-align: left;  }
+</code></pre>
+</aside>
+
+<h2 id="verbatim">verbatim 環境</h2>
+<p><dfn><code>verbatim</code> 環境</dfn> の中では、書かれた通りにテキストが出力されます。</p>
+<pre><code>\begin{verbatim}
+(^_^;)
+\end{verbatim}
+</code></pre>
+<p>出力は次のようになります。</p>
+<pre><samp>(^_^;)
+</samp></pre>
+
+<aside>
+<p>ePub3 では HTML の <code>pre</code> 要素が使えます。しかし、<code>verbatim</code> 環境が全ての文字をそのまま出力するのに対し、 <code>pre</code> 要素では HTML の要素が使えてしまいます。これは <code>pre</code> 要素の中でもテキストを編集できる利点にもなりますが、HTML のコードをそのまま書けない欠点にもなります。HTML のコードを書く場合は &lt; と &gt; を &amp;lt; と &amp;gt; という風に書き直す必要があります。</p>
+<p>なお、デフォールトの <code>pre</code> 要素は画面の端に達しても改行しません。これでは小さなディスプレーで見る時に困ります。以下の CSS を追加することで、改行してくれるようになります。</p>
+<pre><code>pre { white-space: pre-wrap; }
+</code></pre>
+</aside>
+
+</article>
+</section>
+
+<section>
+<article>
+<h1 id="figure-table">図表にかかわる環境</h1>
+<p>図表を挿入するために 2 つの環境が用意されています。</p>
+<p><dfn><code>figure</code> 環境</dfn>は図を挿入するための環境です。一方、<dfn><code>table</code> 環境</dfn>は表を挿入するための環境です。</p>
+<pre><code>\begin{figure}[htbp]
+  実際の図
+  \caption{キャプション}
+  \label{ラベル}
+\end{figure}
+
+\begin{table}[htbp]
+  \caption{キャプション}
+  \label{ラベル}
+  実際の表
+\end{table}
+</code></pre>
+</article>
+</section>
+<p>「実際の図」や「実際の表」を挿入するコマンドは後で説明することにして、<code>figure</code> 環境と <code>table</code> 環境の大枠を解説しましょう。</p>
+<p>LaTeX では、図や表を作者の望む位置に置くことが非常に困難です。というのも、「印刷物」にはページがあるからです。図や表が不幸にしてページの変わり目にある場合、もしくは一つのページに図や表が多すぎる場合、LaTeX は図や表を次ページへ移し、うしろにあるテキストを前に回します。この時、どこからどこまでが「図」もしくは「表」であるかを示しているのが <code>figure</code>・<code>table</code> 環境です。</p>
+<p>これらの環境はオプション引数を取ることができます。上に <code>[htbp]</code> と見えるのがそれです。これは、図・表を「今ある位置 (here)」「ページ上端 (top)」「ページ下端 (bottom)」「次ページ (page)」に置くことを意味しています。といっても、これは LaTeX に図・表の置き場所を決定させるものではありません。少しヒントを与えるだけのことです。</p>
+<p><dfn><code>caption</code> コマンド</dfn>は図や表のキャプション (説明) を入れるコマンドです。一般に図のキャプションは図の下、表のキャプションは表の上に置きます。</p>
+
+<aside>
+<p>ePub3 では XHTML5 の <code>figure</code> 要素と <code>figcaption</code> 要素を使って図・表を管理すると良いでしょう。上の LaTeX の例を ePub3 に直すと次のようになります。</p>
+<pre><code>&lt;figure id="ラベル"&gt;
+  実際の図
+  &lt;figcaption class="figure"&gt;キャプション&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;figure id="ラベル"&gt;
+  &lt;figcaption class="table"&gt;キャプション&lt;/figcaption&gt;
+  実際の表
+&lt;/figure&gt;
+</code></pre>
+<p><code>figcaption</code> 要素は省略可能な要素ですが、入れる場合は <code>figure</code> 要素の始まりか終わりのどちらかにしか入れてはいけません。</p>
+<details>
+<p><code>figcaption</code> 要素に <code>class=figure/table</code> と入れているのは、キャプションに自動的に「図 1」や「表 2」という文字列を追加するための工夫です。CSS コードは次のようになります。</p>
+<pre><code>html {
+  counter-reset: fig tab;
+}
+figcaption.table:before {
+  content: "表 " counter(tab) ": ";
+}
+figcaption.table {
+  counter-increment: tab;
+}
+figcaption.figure:before {
+  content: "図 " counter(fig) ": ";
+}
+figcaption.figure {
+  counter-increment: fig;
+}
+</code></pre>
+<p>なお、<code>table</code> 要素は <code>figcaption</code> 要素とは別に <code>caption</code> 要素を持ちます。意味合いは同じですが、ソースコードの統一性から私は <code>table</code> 要素も <code>figure</code> 要素で囲み <code>figcaption</code> 要素でキャプションを付けています。</p>
+</details>
+</aside>
+
+<h2 id="figure">画像の挿入</h2>
+<p>画像を挿入するには、まずプリアンブルに <code>\usepackage{graphicx}</code> というコードを入れます。というのも、TeX が出来た 1970 年後半には GIF も PNG も PostScript も PDF も存在しなかったからです。そのため TeX にはデフォールトの画像形式がありません。その代わり、パッケージを使って画像を挿入できるようにしたのですね。</p>
+<p>画像形式は、最終出力が PostScript ならば <dfn><abbr title="Encapsulated PostScript">EPS</abbr></dfn> が、PDF ならば PDF 画像が良いでしょう。画像は <code>\includegraphics</code> コマンドを使って埋め込みます。</p>
+<pre><code>\documentclass{jsarticle}
+\usepackage{graphicx}
+\begin{document}
+\begin{figure}[htp]
+  \includegraphics{tiger.eps}
+  \caption{虎の絵}
+\end{figure}
+\end{document}
+</code></pre>
+
+<p>出力は次のようになります。</p>
+
+<pre><samp><figure id="tiger"
+><img width="100%" src="tiger.svg"
+/><figcaption class="figure">虎の絵</figcaption
+></figure
+></samp></pre>
+
+<aside>
+<p>ePub3 で、画像の挿入は HTML の <code>img</code> 要素を使います。ePub3 が対応している画像の種類は GIF, PNG, JPEG, SVG の四つです。</p>
+<p>ePub3 の場合、利用デバイスのディスプレー・サイズが分かりません。そのため、ディスプレーよりも大きな画像を入れてしまうこともあるでしょう。CSS の <code>max-width</code> を設定することで、画面よりも画像が大きい場合に画像を自動縮小することができます。</p>
+<pre><code>img { max-width: 100%; }
+</code></pre>
+</aside>
+
+<h2 id="table">表の挿入</h2>
+<p>表は <code>tabular</code> 環境を使って描きます。非常に複雑ですので、触りだけ紹介します。</p>
+<pre><code>\begin{table}[htbp]
+\caption{HTML5 関連の書籍}
+\begin{tabular}[|l|l|l|]
+\hline
+\textbf{本} &amp; \textbf{作者} &amp; \textbf{出版社} \\
+\hline
+徹底解説 HTML5 マークアップ ガイドブック &amp; 羽田野 太巳 &amp; 秀和システム \\
+\hline
+HTML5 \&amp; API 入門 &amp; 白石 俊平 &amp; 日経 BP \\
+\hline
+Google API Expert が解説する HTML5 ガイドブック &amp; 羽田野 太巳、白石 俊平、古籏 一浩、太田 昌吾 &amp; インプレス・ジャパン \\
+\hline
+\end{tabular}
+\end{table}
+</code></pre>
+
+<p>まずは出力結果を見て頂きましょう。</p>
+
+<pre><samp><figure
+><figcaption class="table">HTML5 関連の書籍</figcaption
+><table>
+<tr style="text-align: left;"><th>本</th><th>作者</th><th>出版社</th></tr>
+<tr><td>徹底解説 HTML5 マークアップ ガイドブック</td> <td>羽田野 太巳</td> <td>秀和システム</td></tr>
+<tr><td>HTML5 &amp; API 入門</td> <td>白石 俊平</td> <td>日経 BP</td></tr>
+<tr><td>Google API Expert が解説する HTML5 ガイドブック</td> <td>羽田野 太巳、白石 俊平、古籏 一浩、太田 昌吾</td> <td>インプレス・ジャパン</td></tr>
+</table
+></figure
+></samp></pre>
+
+<p><code>tabular</code> 環境のオプション引数で、表のセルの数と位置を指定します。<code>l</code>, <code>c</code>, <code>r</code>, <code>p</code> が指定できます。順に左寄せ・センタリング・右寄せ・段落です。<code>[lll]</code> は左寄せのセルが 3 つあるという意味です。また、セルの間に罫線を入れる場合は <code>|</code> を入れます。今回のオプション引数は <code>[|l|l|l|]</code> ですから、左寄せのセルが 3 つで、セルの間に罫線が入るとなります。</p>
+<p>横の罫線は <code>\hline</code> コマンドを使います。</p>
+<p>セルの区切りは &amp; を使います。</p>
+
+<aside>
+<p>ePub3 では表を描くのに HTML の <code>table</code> 要素を使います。</p>
+<p>図表を描いて気になるのが、罫線ではないでしょうか? 簡単な図を描くと次のようになります。</p>
+<figure>
+<figcaption class="table">デフォールトの罫線</figcaption>
+<table style="border-collapse: separate; border: solid 1px black;">
+<tr><td>a</td><td>b</td></tr>
+<tr><td>c</td><td>d</td></tr>
+</table>
+</figure>
+<p>これは TeX の形式ではありませんし、(私は常々思っているのですが) 見た目も格好よくありません。上のように罫線をスッとさせるには、CSS に次のコードを追記します。</p>
+<pre class="sample">table {
+  border-collapse: collapse;
+}
+th, td {
+  border: solid 1px black;
+}</pre>
+<p>結果はご覧の通りです。</p>
+<figure>
+<figcaption class="table">スッキリした罫線</figcaption>
+<table>
+<tr><td>a</td><td>b</td></tr>
+<tr><td>c</td><td>d</td></tr>
+</table>
+</figure>
+</aside>
+
+<section>
+<article>
+<h1 id="math">数式</h1>
+<p>LaTeX では数式が美しく書けます。しかし、肝心のブラウザーが非対応のようで詳しい説明が書けません。<a href="http://k-hiura.cocolog-nifty.com/blog/2010/07/html5mathml-419.html">HTML5,MathMLを使ってみる: 万象酔歩</a> から一つ拝借してみましょう。時間に関するローレンツ変換式です。</p>
+<math style="display:block">
+  <mi>t2</mi>
+  <mo>=</mo>                 <!-- 等号は単純な演算子扱い -->
+  <mfrac>
+    <mi>t1</mi>
+    <msqrt><mrow>
+       <mn>1</mn>
+       <mo>-</mo>
+       <mfrac>
+          <msup>             <!-- n乗は<msup>内に基数と乗数を書く -->
+             <mi>v</mi>      <!-- 基数 -->
+             <mn>2</mn>      <!-- 乗数 -->
+          </msup>
+          <msup>
+             <mi>C</mi>
+             <mn>2</mn>
+          </msup>
+       </mfrac>
+    </mrow></msqrt>
+  </mfrac>
+</math>
+</article>
+</section>
+
+<section>
+<article>
+<h1 id="misc">目次・参照・索引・参考文献</h1>
+<p>未完</p>
+<h2 id="crossreference">参照</h2>
+<p>LaTeX では章番号・図番号・表番号・数式番号の参照が可能です。</p>
+<p><code>\section</code> コマンドを例に説明しましょう。まず参照する側で <code>\label</code> コマンドにラベルを指定します。この時、ラベルは一意でなくてはなりません。ラベルの種類をプレフィックスに置く Tips がよく使われます。</p>
+<pre><code>\section{参照について}
+\label{sec: reference}
+</code></pre>
+
+<p>この出力が次のようだったとします。</p>
+<pre><samp><big>7.2 参照について</big>
+</samp></pre>
+<p>ここで、「7.2」というセクション番号は LaTeX が自動で付けたものです。</p>
+<p>さて、この「参照について」のセクションを参照したいとします。<code>\ref</code> コマンドでラベルを指定します。次のように使います。</p>
+
+<aside>
+<p>ePub3 において参照は <a href="#css3page">[CSS3PAGE]</a> の <code>target-counter</code> を使います。</p>
+<pre><code>&lt;h2 id="ref"&gt;参照&lt;/h2&gt;
+&lt;p&gt;この件については&lt;a href="ref"&gt;前節&lt;/a&gt;を参照のこと。&lt;/p&gt;
+</code></pre>
+<p>このような XHTML ソースに対して、次の CSS を追記します。</p>
+<pre><code>h2 { counter-increment: chapter }
+a { content: "Chapter " target-counter(attr(href, url), chapter) }
+</code></pre>
+<p>すると、「この件については Chapter X を参照のこと」と表示されるはずです。</p>
+</aside>
+
+<pre><code>参照については \ref{sec: reference}~節を参照して下さい。
+</code></pre>
+
+<p>すると、このような結果になります。</p>
+<pre><samp>参照については 7.2&#160;節を参照して下さい。
+</samp></pre>
+
+</article>
+</section>
+
+<section>
+<article>
+<h1 id="bibliography">参考文献</h1>
+<ul id="bib">
+ <li id="css3page">[CSS3PAGE] <a href="http://www.w3.org/TR/css3-gcpm/">CSS Generated Content for Paged Media Module</a></li>
+</ul>
+</article>
+</section>
+
+</body>
+</html>

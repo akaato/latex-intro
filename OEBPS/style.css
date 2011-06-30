@@ -1,0 +1,93 @@
+@charset "utf-8";
+
+/* Heading Counter */
+html {
+  counter-reset: chapter fig tab;
+}
+h1 {
+  counter-increment: chapter;
+  counter-reset: section
+}
+h1:before {
+  content: "Chapter " counter(chapter) ". ";
+}
+
+h2 {
+  counter-increment: section;
+}
+h2:before {
+  content: "Section " counter(chapter) "." counter(section) ". ";
+}
+
+/* Heading */
+h1 {
+  font-size: xx-large;
+}
+
+/* Paragraph */
+p {
+  margin: 0;
+  text-indent: 1em;
+}
+
+.footnote {
+  float: footnote;
+}
+
+/* Image */
+img {
+  max-width: 100%;
+}
+figcaption.figure:before {
+  content: "図 " counter(fig) ": ";
+}
+figcaption.figure {
+  counter-increment: fig;
+}
+
+/* Table */
+table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+thead {
+  background-color: grey;
+}
+th, td {
+  border: solid 1px black;
+}
+figcaption.table:before {
+  content: "表 " counter(tab) ": ";
+}
+figcaption.table {
+  counter-increment: tab;
+}
+
+/* Pre */
+pre {
+  border: solid 1px black;
+  -webkit-border-radius: 25px;
+  border-radius: 25px;
+  padding: 1em;
+  white-space: pre-wrap;
+}
+
+/* Cross Reference */
+a.figure {
+  content: "図 " target-counter(attr(href, url), fig);
+}
+
+a.table {
+  content: "表 " target-counter(attr(href, url), tab);
+}
+
+/* aside for ePub3 */
+aside {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 2em;
+  padding: 2em 1em 1em 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  background-color: #ffeeee;
+}

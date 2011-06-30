@@ -1,0 +1,6 @@
+digraph g {
+ graph [rankdir = LR];
+ "foo.tex" -> "foo.dvi" [label = "platex"];
+ "foo.dvi" -> "foo.ps"  [label = "dvips"];
+ "foo.dvi" -> "foo.pdf" [label = "dvipdfmx"];
+}

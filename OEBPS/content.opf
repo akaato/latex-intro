@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="3.0" xmlns="http://www.idpf.org/2007/opf"
+	 unique-identifier="BookID" xml:lang="ja"
+	 profile="http://www.idpf.org/epub/30/profile/package/">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+	    xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>LaTeX 入門</dc:title>
+    <dc:creator opf:role="aut">絳アト</dc:creator>
+    <dc:language>ja</dc:language>
+    <dc:identifier id="BookID" opf:scheme="UUID">urn:uuid:b7502cb0-31fe-41a7-854b-38469a2991c9</dc:identifier>
+ </metadata>
+ <manifest>
+   <item properties="nav" id="toc" href="toc.xhtml" media-type="application/xhtml+xml"/>
+   <item id="style" href="style.css" media-type="text/css"/>
+   <item properties="remote-resources"
+	 id="catalogue" href="intro.xhtml" media-type="application/xhtml+xml"/>
+ </manifest>
+ <spine>
+   <itemref idref="toc"/>
+   <itemref idref="intro" />
+ </spine>
+</package>
